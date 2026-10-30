@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>北京联通 · 终端运营智能指挥舱</title>
+<!-- 零外部依赖：不加载任何第三方字体/资源，本地 file:// 双击即可离线全屏演示 -->
+<style>
+:root{
+  --ink:#f4f3f0;
+  --ink2:#eceae5;
+  --panel:#ffffff;
+  --panel2:#fafaf8;
+  --line:#e7e5df;
+  --line2:#d8d5cd;
+  --txt:#20242a;
+  --dim:#6b7280;
+  --faint:#767d88;
+  --red:#e60012;
+  --red-soft:#dc2626;
+  --gold:#b45309;
+  --teal:#0f766e;
+  --blue:#2563eb;
+  --green:#16a34a;
+  --serif:"Noto Serif SC","Source Han Serif SC","Songti SC","SimSun",serif;
+  --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Consolas,"Courier New",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--ink);
+  color:var(--txt);
+  font-family:var(--sans);
+  font-weight:400;
+  overflow-x:hidden;
+  background-image:
+    radial-gradient(900px 420px at 88% -8%, rgba(230,0,18,.045), transparent 65%),
+    linear-gradient(rgba(32,36,42,.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(32,36,42,.028) 1px, transparent 1px);
+  background-size:auto,52px 52px,52px 52px;
+}
+/* ===== header ===== */
+header{
+  position:relative;z-index:10;
+  padding:26px 40px 0;
+  border-bottom:1px solid var(--line);
+  background:rgba(255,255,255,.88);
+  backdrop-filter:blur(8px);
+}
+.h-top{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:16px}
+.brand-mark{
+  width:46px;height:46px;border-radius:50%;
+  background:conic-gradient(from 220deg, var(--red), #ff7a4d 40%, var(--red) 75%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-weight:900;font-size:22px;color:#fff;
+  box-shadow:0 8px 20px rgba(230,0,18,.25);
+  animation:pulseGlow 4s ease-in-out infinite;
+}
+@keyframes pulseGlow{50%{box-shadow:0 10px 26px rgba(230,0,18,.4)}}
+h1{font-family:var(--serif);font-weight:900;font-size:26px;letter-spacing:.06em;line-height:1.1}
+h1 .en{display:block;font-family:var(--mono);font-weight:400;font-size:10px;letter-spacing:.42em;color:var(--faint);text-transform:uppercase;margin-top:5px}
+.h-meta{display:flex;gap:26px;align-items:center;font-family:var(--mono);font-size:11px;color:var(--dim)}
+.h-meta b{color:var(--txt);font-weight:500}
+.dot-live{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:7px;box-shadow:0 0 8px var(--green);animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.25}}
+nav{display:flex;gap:6px;margin-top:22px}
+.tab{
+  appearance:none;border:1px solid transparent;background:transparent;
+  color:var(--dim);font-family:var(--sans);font-size:14px;font-weight:500;
+  padding:12px 26px 14px;cursor:pointer;position:relative;letter-spacing:.14em;
+  transition:color .25s;
+}
+.tab .num{font-family:var(--mono);font-size:10px;color:var(--faint);margin-right:8px}
+.tab:hover{color:var(--txt)}
+.tab.on{color:var(--txt)}
+.tab.on::after{
+  content:"";position:absolute;left:14px;right:14px;bottom:-1px;height:2px;
+  background:linear-gradient(90deg,var(--red),#ff6a4d);
+  box-shadow:0 0 12px rgba(230,0,18,.8);
+}
+.tab.on .num{color:var(--red-soft)}
+/* ===== layout ===== */
+main{position:relative;z-index:5;padding:30px 40px 60px;max-width:1560px;margin:0 auto}
+.view{display:none;animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+.view.on{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.view-head{margin-bottom:22px}
+.view-head h2{font-family:var(--serif);font-size:21px;font-weight:700;letter-spacing:.05em}
+.view-head p{color:var(--dim);font-size:13px;margin-top:6px;letter-spacing:.05em}
+
+/* ===== 首页 ===== */
+.home-hero{
+  display:grid;grid-template-columns:minmax(0,7fr) minmax(0,4fr);
+  gap:clamp(24px,4vw,56px);align-items:center;
+  padding:clamp(28px,5vh,60px) 0 clamp(26px,4vh,50px);
+  border-bottom:1px solid var(--line);
+}
+.hh-kicker{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:11.5px;letter-spacing:.3em;color:var(--red-soft);margin-bottom:22px}
+.hh-kicker::before{content:"";width:40px;height:2px;background:var(--red);flex:none}
+.hh-title{font-family:var(--serif);font-weight:900;font-size:clamp(38px,5.4vw,72px);line-height:1.15;letter-spacing:.04em}
+.hh-title em{font-style:normal;color:var(--red)}
+.hh-title span{color:var(--dim);font-weight:500}
+.hh-lead{margin-top:24px;max-width:640px;font-size:15px;line-height:2.12;color:#3f444c;font-weight:300}
+.hh-lead b{font-weight:500;color:var(--txt);border-bottom:1px solid var(--red)}
+.hh-acts{margin-top:30px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.hh-btn{
+  appearance:none;cursor:pointer;font-family:var(--sans);font-size:13.5px;letter-spacing:.14em;
+  padding:13px 26px;border:1px solid var(--line2);background:#fff;color:var(--txt);transition:.22s;
+}
+.hh-btn:hover{border-color:var(--red);color:var(--red);transform:translateY(-2px)}
+.hh-btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.hh-btn.primary:hover{filter:brightness(1.12);color:#fff}
+.hh-note{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--faint)}
+.hh-art svg{display:block;width:100%;max-width:320px;height:auto;margin:0 auto}
+.home-sec{display:flex;align-items:baseline;gap:14px;margin:clamp(30px,4.5vh,52px) 0 18px}
+.home-sec i{font-style:normal;font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:var(--red-soft)}
+.home-sec b{font-family:var(--serif);font-size:18px;letter-spacing:.1em;color:var(--txt)}
+.home-sec s{text-decoration:none;font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--faint);margin-left:auto}
+.home-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.hcard{background:#fff;padding:26px 22px;position:relative;transition:background .3s}
+.hcard:hover{background:var(--panel2)}
+.hcard::after{content:"";position:absolute;left:0;top:0;height:2px;width:100%;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+.hcard:hover::after{transform:scaleX(1)}
+.hc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.hc-id{font-family:var(--mono);font-size:30px;font-weight:500;color:var(--line2);line-height:1;transition:color .3s}
+.hcard:hover .hc-id{color:var(--red)}
+.hc-ic{width:40px;height:40px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;transition:border-color .3s,background .3s}
+.hcard:hover .hc-ic{border-color:var(--red);background:rgba(230,0,18,.05)}
+.hc-ic svg{width:18px;height:18px;stroke:var(--txt);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round;transition:stroke .3s}
+.hcard:hover .hc-ic svg{stroke:var(--red)}
+.hc-en{font-family:var(--mono);font-size:10px;letter-spacing:.26em;color:var(--red-soft);margin-bottom:8px}
+.hcard h4{font-family:var(--serif);font-size:17px;font-weight:700;letter-spacing:.04em;line-height:1.55;margin-bottom:10px}
+.hcard p{font-size:13px;line-height:1.95;color:var(--dim);font-weight:300}
+.hcard p b{color:var(--txt);font-weight:500}
+.hc-spec{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line2);font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--faint)}
+.hc-spec i{font-style:normal;color:var(--red);margin:0 6px}
+.home-values{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.hv{background:#fff;border:1px solid var(--line);padding:22px 24px;position:relative}
+.hv::before{content:"";position:absolute;left:-1px;top:18px;bottom:18px;width:3px;background:var(--red)}
+.hv span{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.26em;color:var(--faint);margin-bottom:10px}
+.hv b{display:block;font-family:var(--serif);font-size:17px;letter-spacing:.08em;color:var(--txt);margin-bottom:8px}
+.hv p{font-size:13px;line-height:1.95;color:var(--dim);font-weight:300}
+.home-spec{margin-top:clamp(28px,4vh,44px);background:var(--txt);color:#eceae5;padding:24px 30px}
+.hs-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;letter-spacing:.3em;color:#9aa0a8;margin-bottom:18px}
+.hs-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;font-family:var(--mono)}
+.hs-grid div span{display:block;font-size:9.5px;letter-spacing:.18em;color:#8b8f97;margin-bottom:7px}
+.hs-grid div b{font-size:13.5px;font-weight:500;color:#fff;letter-spacing:.03em}
+.hs-grid div b em{font-style:normal;color:#ff6b76}
+@media (max-width:1080px){
+  .home-grid{grid-template-columns:repeat(2,1fr)}
+  .hs-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:760px){
+  .home-hero{grid-template-columns:1fr}
+  .hh-art{order:-1}
+  .home-grid,.home-values{grid-template-columns:1fr}
+  .hs-grid{grid-template-columns:repeat(2,1fr)}
+}
+/* ===== 隔空手势 ===== */
+.air-toggle{
+  appearance:none;cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  padding:7px 14px;border:1px solid var(--line2);background:#fff;color:var(--txt);transition:.2s;flex:none;
+}
+.air-toggle:hover{border-color:var(--red);color:var(--red)}
+.air-toggle.on{background:var(--red);border-color:var(--red);color:#fff;animation:airpulse 1.6s ease-in-out infinite}
+@keyframes airpulse{50%{box-shadow:0 0 0 5px rgba(230,0,18,.14)}}
+.air-dock{
+  position:fixed;right:22px;bottom:22px;z-index:120;width:254px;
+  background:#fff;border:1px solid var(--line2);box-shadow:0 18px 44px rgba(28,30,34,.16);
+}
+.ad-head{
+  display:flex;align-items:center;gap:9px;padding:11px 13px;border-bottom:1px solid var(--line);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;color:var(--txt);
+}
+.ad-head .sig{width:8px;height:8px;border-radius:50%;background:var(--red);animation:airpulse 1.6s ease-in-out infinite;flex:none}
+.ad-head button{margin-left:auto;appearance:none;border:0;background:none;cursor:pointer;color:var(--faint);font-size:14px;line-height:1}
+.ad-head button:hover{color:var(--red)}
+.ad-video{position:relative;background:#14161a;aspect-ratio:4/3}
+.ad-video video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:block}
+.ad-video canvas{position:absolute;inset:0;width:100%;height:100%;transform:scaleX(-1)}
+.ad-status{padding:10px 13px 4px;font-size:12px;line-height:1.7;color:var(--dim);min-height:34px}
+.ad-status.ok{color:#c00010}
+.ad-status.err{color:#b45309}
+.ad-tip{padding:4px 13px 13px;font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--faint)}
+.air-cursor{
+  position:fixed;left:0;top:0;width:34px;height:34px;border:2px solid var(--red);border-radius:50%;
+  z-index:130;pointer-events:none;transform:translate3d(-100px,-100px,0);
+  transition:width .15s,height .15s,background .15s,opacity .2s;box-shadow:0 0 0 6px rgba(230,0,18,.10);
+}
+.air-cursor::after{content:"";position:absolute;left:50%;top:50%;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;background:var(--red)}
+.air-cursor.pinch{width:22px;height:22px;background:rgba(230,0,18,.25)}
+@media (prefers-reduced-motion: reduce){.air-toggle.on,.ad-head .sig{animation:none}}
+@media (max-width:760px){.air-dock{right:12px;bottom:12px;width:216px}}
+
+.footnote{
+  font-family:var(--mono);font-size:10.5px;color:var(--faint);
+  border-top:1px dashed var(--line2);padding-top:8px;margin-top:12px;letter-spacing:.03em;
+}
+.footnote b{color:var(--dim);font-weight:500}
+/* ===== chat ===== */
+.chat-wrap{display:grid;grid-template-columns:1fr 330px;gap:22px;align-items:start}
+.chat-card{
+  background:var(--panel);
+  border:1px solid var(--line);border-radius:4px;overflow:hidden;
+  box-shadow:0 12px 32px rgba(32,36,42,.06);
+}
+.chat-bar{
+  display:flex;align-items:center;gap:10px;padding:13px 18px;
+  border-bottom:1px solid var(--line);background:var(--panel2);
+}
+.chat-bar .sig{width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 0 10px var(--red);animation:blink 2s infinite}
+.chat-bar span{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--dim);text-transform:uppercase}
+.chat-log{height:520px;overflow-y:auto;padding:24px 22px;display:flex;flex-direction:column;gap:18px}
+.chat-log::-webkit-scrollbar{width:8px}
+.chat-log::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
+.msg{max-width:82%;animation:rise .35s ease both}
+.msg .who{font-family:var(--mono);font-size:9.5px;letter-spacing:.3em;color:var(--faint);margin-bottom:6px;text-transform:uppercase}
+.msg.me{align-self:flex-end;text-align:right}
+.msg.me .bubble{
+  background:#f1f0ec;border:1px solid var(--line2);
+  padding:11px 16px;border-radius:3px 14px 3px 14px;font-size:14px;color:var(--txt);text-align:left;
+}
+.msg.ai .bubble{
+  background:#fff;border:1px solid var(--line);
+  border-radius:14px 3px 14px 3px;padding:16px 18px;font-size:14px;line-height:1.85;
+  box-shadow:0 6px 18px rgba(32,36,42,.05);
+}
+.bubble .a-title{font-family:var(--serif);font-weight:700;font-size:15.5px;color:var(--txt);margin-bottom:8px;letter-spacing:.04em}
+.bubble .a-title::before{content:"◆";color:var(--red);font-size:10px;margin-right:8px;vertical-align:2px}
+.bubble em{font-style:normal;color:var(--gold);font-family:var(--mono);font-weight:600}
+.bubble strong{color:#111827;font-weight:700}
+.a-chart{margin:12px 0 6px;background:#fbfbf9;border:1px solid var(--line);border-radius:3px;padding:12px 10px 6px}
+.a-chart .ct{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.14em;margin-bottom:6px;padding-left:4px}
+.a-src{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  margin-top:12px;padding-top:10px;border-top:1px dashed var(--line2);
+  font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:.03em;
+}
+.a-src .tag{background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.3);color:#1d4ed8;padding:2px 7px;border-radius:2px}
+.mini-btn{
+  appearance:none;cursor:pointer;font-family:var(--mono);font-size:10px;letter-spacing:.08em;
+  background:rgba(230,0,18,.07);border:1px solid rgba(230,0,18,.4);color:#c00d1a;
+  padding:4px 10px;border-radius:2px;transition:.2s;
+}
+.mini-btn:hover{background:var(--red);color:#fff}
+.kpi-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.kpi-mini div{background:#fff;border:1px solid var(--line);padding:9px 10px;border-radius:3px}
+.kpi-mini span{display:block;font-family:var(--mono);font-size:9.5px;color:var(--dim);letter-spacing:.1em}
+.kpi-mini b{font-family:var(--mono);font-size:17px;color:var(--txt);font-weight:600}
+.kpi-mini i{font-style:normal;font-family:var(--mono);font-size:10px}
+.up{color:var(--green)}.down{color:var(--red-soft)}.warn{color:var(--gold)}
+.chat-input{display:flex;gap:0;border-top:1px solid var(--line);background:#fff}
+.chat-input input{
+  flex:1;background:transparent;border:none;outline:none;color:var(--txt);
+  font-family:var(--sans);font-size:14.5px;padding:17px 18px;letter-spacing:.03em;
+}
+.chat-input input::placeholder{color:var(--faint)}
+.chat-input button{
+  appearance:none;border:none;cursor:pointer;padding:0 28px;
+  background:var(--red);color:#fff;
+  font-family:var(--sans);font-weight:500;font-size:14px;letter-spacing:.2em;transition:.25s;
+}
+.chat-input button:hover{filter:brightness(1.2)}
+.chat-input .mic-btn{
+  flex:none;width:54px;padding:0;overflow:hidden;
+  background:transparent;color:var(--dim);border-left:1px solid var(--line);
+  display:grid;place-items:center;transition:background .2s,color .2s;
+}
+.chat-input .mic-btn:hover{filter:none;background:rgba(230,0,18,.05);color:var(--red)}
+.chat-input .mic-btn.on{background:var(--red);color:#fff;border-left-color:var(--red)}
+@media (prefers-reduced-motion: no-preference){
+  .chat-input .mic-btn.on{animation:micpulse 1.2s ease-in-out infinite}
+  @keyframes micpulse{50%{box-shadow:0 0 0 7px rgba(230,0,18,.16)}}
+}
+.speak-btn{
+  margin-top:9px;appearance:none;background:#fff;
+  border:1px solid var(--line2);color:var(--dim);border-radius:3px;
+  padding:3px 10px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  cursor:pointer;transition:.2s;
+}
+.speak-btn:hover{border-color:var(--red);color:var(--red)}
+.speak-btn.on{background:var(--red);border-color:var(--red);color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{
+  appearance:none;cursor:pointer;font-family:var(--sans);font-size:12.5px;font-weight:400;
+  background:#fff;border:1px solid var(--line2);color:var(--dim);
+  padding:7px 14px;border-radius:20px;transition:.22s;letter-spacing:.04em;
+}
+.chip:hover{border-color:var(--red);color:var(--red);background:rgba(230,0,18,.04);transform:translateY(-2px)}
+.side-card{
+  background:var(--panel);
+  border:1px solid var(--line);border-radius:4px;padding:18px 18px 16px;margin-bottom:16px;
+}
+.side-card h4{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.26em;color:var(--dim);
+  text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;
+}
+.side-card h4::before{content:"";width:14px;height:2px;background:var(--red)}
+.stat-row{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.stat-row:last-child{border-bottom:none}
+.stat-row .k{color:var(--dim)}
+.stat-row .v{font-family:var(--mono);font-weight:600;color:var(--txt);font-size:15px}
+.policy{font-size:12.5px;line-height:1.9;color:var(--dim)}
+.policy li{margin-left:16px;margin-bottom:7px}
+.policy b{color:var(--gold);font-weight:500}
+/* ===== dashboard ===== */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.kpi{
+  position:relative;background:var(--panel);
+  border:1px solid var(--line);border-radius:4px;padding:18px 18px 14px;overflow:hidden;
+  cursor:pointer;transition:.3s;
+}
+.kpi:hover{transform:translateY(-4px);border-color:var(--line2);box-shadow:0 14px 30px rgba(32,36,42,.10)}
+.kpi::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:var(--line2)}
+.kpi.good::before{background:linear-gradient(90deg,var(--green),transparent)}
+.kpi.bad::before{background:linear-gradient(90deg,var(--red),transparent)}
+.kpi.warn::before{background:linear-gradient(90deg,var(--gold),transparent)}
+.kpi .kname{font-size:12.5px;color:var(--dim);letter-spacing:.12em;display:flex;justify-content:space-between;align-items:center}
+.light{width:8px;height:8px;border-radius:50%}
+.good .light{background:var(--green);box-shadow:0 0 8px var(--green)}
+.bad .light{background:var(--red);box-shadow:0 0 8px var(--red);animation:blink 1.4s infinite}
+.warn .light{background:var(--gold);box-shadow:0 0 8px var(--gold)}
+.kpi .kval{font-family:var(--mono);font-size:34px;font-weight:600;color:var(--txt);margin:10px 0 2px;letter-spacing:-.02em}
+.kpi .kval small{font-size:14px;color:var(--dim);font-weight:400;margin-left:3px}
+.kpi .kdelta{font-family:var(--mono);font-size:12px;letter-spacing:.04em}
+.kpi .spark{margin-top:10px;opacity:.85}
+.charts{display:grid;grid-template-columns:1.55fr 1fr;gap:16px;margin-top:16px}
+.chart-card{
+  background:var(--panel);
+  border:1px solid var(--line);border-radius:4px;padding:18px 20px 14px;
+}
+.chart-card h3{font-family:var(--serif);font-size:15.5px;font-weight:700;letter-spacing:.06em;display:flex;justify-content:space-between;align-items:center}
+.chart-card h3 .hint{font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:.1em;font-weight:400}
+.chart-card .sub{font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-top:4px;letter-spacing:.05em}
+.chart-body{margin-top:14px}
+.charts-row2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:16px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:8px;letter-spacing:.06em}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+/* ===== graph ===== */
+.graph-wrap{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+.graph-canvas{
+  position:relative;background:
+    radial-gradient(700px 400px at 30% 20%, rgba(37,99,235,.05), transparent 60%),
+    var(--panel);
+  border:1px solid var(--line);border-radius:4px;height:660px;
+  overflow:hidden;cursor:grab;touch-action:none;
+}
+.graph-canvas.panning{cursor:grabbing}
+.graph-inner{position:relative;width:1180px;height:640px;margin:0 auto;transform-origin:0 0;transition:transform .08s linear}
+.nav-hint{
+  margin-left:auto;align-self:flex-end;padding-bottom:14px;
+  font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:.08em;
+}
+#edges{position:absolute;inset:0;pointer-events:none}
+#edges path{fill:none;stroke:#d4d7dd;stroke-width:1.4;transition:.3s}
+#edges path.hl{stroke:var(--red-soft);stroke-width:2.4;filter:drop-shadow(0 0 5px rgba(255,69,83,.7));stroke-dasharray:7 5;animation:dash 1.1s linear infinite}
+#edges path.dim{opacity:.16}
+@keyframes dash{to{stroke-dashoffset:-24}}
+.gnode{
+  position:absolute;width:172px;padding:9px 12px 8px;cursor:pointer;
+  background:var(--panel2);border:1px solid var(--line2);border-radius:3px;
+  transition:.3s;font-size:12.5px;box-shadow:0 2px 6px rgba(32,36,42,.04);
+}
+.gnode .gt{font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;color:var(--faint);text-transform:uppercase;display:block;margin-bottom:3px}
+.gnode .gn{color:var(--txt);font-weight:500;letter-spacing:.03em}
+.gnode.src{border-left:3px solid var(--blue)}
+.gnode.mid{border-left:3px solid var(--gold)}
+.gnode.met{border-left:3px solid var(--red);background:linear-gradient(135deg,#fff5f5,var(--panel2))}
+.gnode.app{border-left:3px solid var(--teal)}
+.gnode:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 18px rgba(32,36,42,.12);z-index:6}
+.gnode.sel{border-color:var(--red-soft);box-shadow:0 0 0 1px var(--red-soft),0 0 26px rgba(230,0,18,.5);z-index:7}
+.gnode.hl{border-color:var(--gold);box-shadow:0 0 16px rgba(229,169,77,.35)}
+.gnode.dim{opacity:.22}
+.gnode.on-path{border-color:var(--red-soft);box-shadow:0 0 14px rgba(255,69,83,.4)}
+.col-label{
+  position:absolute;font-family:var(--mono);font-size:9.5px;letter-spacing:.3em;
+  color:var(--faint);text-transform:uppercase;transition:opacity .35s;
+}
+/* ===== 布局切换（层级 / 环形） ===== */
+.layout-switch{
+  position:absolute;right:12px;top:12px;z-index:9;display:flex;
+  background:#fff;border:1px solid var(--line2);border-radius:3px;overflow:hidden;
+  box-shadow:0 4px 12px rgba(32,36,42,.08);
+}
+.layout-switch button{
+  appearance:none;border:0;background:none;cursor:pointer;
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;padding:7px 15px;
+  color:var(--dim);transition:.2s;
+}
+.layout-switch button+button{border-left:1px solid var(--line2)}
+.layout-switch button:hover{color:var(--red)}
+.layout-switch button.on{background:var(--red);color:#fff}
+#edges{transition:opacity .25s}
+/* 环形布局形态 */
+.graph-inner.circular .col-label{opacity:0}
+.graph-inner.circular .gnode{
+  width:auto;max-width:172px;transform:translate(-50%,-50%);
+  padding:7px 12px;font-size:11.5px;text-align:center;border-radius:14px;
+}
+.graph-inner.circular .gnode .gt{display:none}
+.graph-inner.circular .gnode:hover{transform:translate(-50%,-50%) translateY(-2px)}
+/* 环形连边：向心弧线 + 按源类别着色（hl/dim 规则须置于其后以保持血缘高亮） */
+.circular #edges path{stroke:var(--ec,#d4d7dd);stroke-width:1.15;opacity:.8}
+.circular #edges path.hl{stroke:var(--red-soft);stroke-width:2.4;opacity:1;filter:drop-shadow(0 0 5px rgba(255,69,83,.7));stroke-dasharray:7 5;animation:dash 1.1s linear infinite}
+.circular #edges path.dim{opacity:.12}
+.legend-graph{display:flex;gap:18px;font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:10px;letter-spacing:.06em;flex-wrap:wrap}
+.detail{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:20px}
+.detail .d-type{font-family:var(--mono);font-size:9.5px;letter-spacing:.3em;color:var(--red-soft);text-transform:uppercase}
+.detail h3{font-family:var(--serif);font-size:19px;margin:8px 0 14px;letter-spacing:.05em}
+.detail .d-item{margin-bottom:13px}
+.detail .d-item span{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:var(--faint);text-transform:uppercase;margin-bottom:4px}
+.detail .d-item p{font-size:13px;line-height:1.75;color:var(--txt)}
+.detail .d-item p.mono{font-family:var(--mono);font-size:12px;color:var(--gold)}
+.chain{display:flex;flex-direction:column;gap:0}
+.chain .step{
+  font-family:var(--mono);font-size:11.5px;color:var(--dim);padding:6px 0 6px 20px;position:relative;
+}
+.chain .step::before{
+  content:"";position:absolute;left:4px;top:11px;width:7px;height:7px;border-radius:50%;
+  background:var(--red-soft);box-shadow:0 0 6px rgba(255,69,83,.8);
+}
+.chain .step::after{
+  content:"";position:absolute;left:7px;top:18px;bottom:-6px;width:1px;background:var(--line2);
+}
+.chain .step:last-child::after{display:none}
+.hint-empty{color:var(--faint);font-size:12.5px;line-height:2;font-family:var(--sans)}
+footer{
+  position:relative;z-index:5;border-top:1px solid var(--line);margin-top:40px;
+  padding:18px 40px;font-family:var(--mono);font-size:10.5px;color:var(--faint);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;letter-spacing:.08em;
+}
+@media (max-width:1200px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .charts,.charts-row2,.chat-wrap,.graph-wrap{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-top">
+    <div class="brand">
+      <div class="brand-mark">联</div>
+      <h1>北京联通 · 终端运营智能指挥舱
+        <span class="en">Unicom Beijing · Terminal Ops Intelligence Console</span>
+      </h1>
+    </div>
+    <div class="h-meta">
+      <span><span class="dot-live"></span>数据链路正常 · 实时</span>
+      <span>口径版本 <b>v2026.10-r3</b></span>
+      <span>取数时间 <b>2026-10-29 08:00</b></span>
+      <span id="clock">--:--:--</span>
+    </div>
+  </div>
+  <nav>
+    <button class="tab on" data-view="home"><span class="num">00</span>首页</button>
+    <button class="tab" data-view="ask"><span class="num">01</span>问数中心</button>
+    <button class="tab" data-view="board"><span class="num">02</span>经营看板</button>
+    <button class="tab" data-view="graph"><span class="num">03</span>数据图谱</button>
+    <span class="nav-hint">← → 切换 ｜ 页面左右滑动 ｜ 图谱拖拽缩放 ｜ 麦克风语音问数</span>
+    <button class="air-toggle" id="airToggle" aria-pressed="false" title="摄像头隔空手势：挥手翻页，捏合点击，无需触屏">◉ 隔空手势</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ================= 首页 · 多模态交互 ================= -->
+<section class="view on" id="view-home">
+  <div class="home-hero">
+    <div>
+      <div class="hh-kicker">MULTI-MODAL INTERACTION ｜ 多模态人机交互</div>
+      <h1 class="hh-title">动口<span>，</span>不动手<br><em>一屏</em>达决策</h1>
+      <p class="hh-lead">
+        以<b>语音识别</b>、<b>语音合成</b>与<b>隔空手势</b>为底座，为经营决策构建自然交互层——
+        问题说出口，答案即呈现；手掌挥动即翻页，指尖捏合即点选。
+        让每一个经营数字，以最直觉的方式抵达决策者。
+      </p>
+      <div class="hh-acts">
+        <button class="hh-btn primary" onclick="switchTab('ask')">开始问数 →</button>
+        <button class="hh-btn" onclick="switchTab('graph')">漫游数据图谱 →</button>
+        <button class="hh-btn" onclick="toggleAir()">开启隔空手势 →</button>
+        <span class="hh-note">无需触屏：开启摄像头后，挥手翻页 · 捏合点选</span>
+      </div>
+    </div>
+    <div class="hh-art">
+      <svg viewBox="0 0 320 260" role="img" aria-label="声波与手势装饰图形">
+        <circle cx="160" cy="130" r="112" fill="none" style="stroke:var(--line2)" stroke-width="1"/>
+        <circle cx="160" cy="130" r="82" fill="none" style="stroke:var(--line2)" stroke-width="1"/>
+        <path d="M52 130 q15 -32 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0" fill="none" style="stroke:var(--red)" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M70 100 q13 -22 26 0 t26 0 t26 0 t26 0 t26 0 t26 0 t26 0" fill="none" style="stroke:var(--line2)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M70 160 q13 22 26 0 t26 0 t26 0 t26 0 t26 0 t26 0 t26 0" fill="none" style="stroke:var(--line2)" stroke-width="1.2" stroke-linecap="round"/>
+        <rect x="148" y="52" width="24" height="46" rx="12" fill="none" style="stroke:var(--red)" stroke-width="1.8"/>
+        <path d="M134 84 a26 26 0 0 0 52 0" fill="none" style="stroke:var(--red)" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M160 110 v14" style="stroke:var(--red)" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M92 208 q68 38 136 0" fill="none" style="stroke:var(--red)" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="2 7"/>
+        <path d="M224 204 l7 8 l-9 6" fill="none" style="stroke:var(--red)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="160" y="246" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="4" style="fill:var(--faint)">SPEAK · SWIPE · EXPLORE</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="home-sec"><i>01</i><b>核心交互能力</b><s>CORE CAPABILITIES</s></div>
+  <div class="home-grid">
+    <article class="hcard">
+      <div class="hc-top"><span class="hc-id">01</span>
+        <span class="hc-ic"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg></span>
+      </div>
+      <div class="hc-en">VOICE-TO-QUERY</div>
+      <h4>语音问数 · 说出口的问题，秒级成答案</h4>
+      <p>点击麦克风即开启<b>中文实时语音识别</b>，语音边说边转写，识别完成自动提交问数引擎——意图识别、指标匹配、取数计算、图表应答一气呵成，全程无需键盘输入。</p>
+      <div class="hc-spec">zh-CN 实时识别<i>·</i>聆听态呼吸灯<i>·</i>权限自适应</div>
+    </article>
+    <article class="hcard">
+      <div class="hc-top"><span class="hc-id">02</span>
+        <span class="hc-ic"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg></span>
+      </div>
+      <div class="hc-en">ANSWER-TO-SPEECH</div>
+      <h4>智能播报 · 让每一条答案，开口说话</h4>
+      <p>每条问数结果均附<b>一键语音播报</b>，标题与正文同步转译，语速经会议场景调校；支持即时打断与互斥连播，汇报现场无需逐字读屏，数据「讲」给领导听。</p>
+      <div class="hc-spec">中文语音合成<i>·</i>1.05× 语速<i>·</i>打断即停</div>
+    </article>
+    <article class="hcard">
+      <div class="hc-top"><span class="hc-id">03</span>
+        <span class="hc-ic"><svg viewBox="0 0 24 24"><path d="M8 12h13"/><path d="M16 7l5 5-5 5"/><path d="M3 6v12"/></svg></span>
+      </div>
+      <div class="hc-en">AIR-GESTURE-TO-NAVIGATION</div>
+      <h4>隔空手势 · 挥手之间，工作区自由切换</h4>
+      <p>摄像头<b>隔空手势识别</b>：手掌左右<b>挥手</b>即在问数中心、经营看板、数据图谱间流转，指尖<b>捏合</b>即点选，手掌化身光标全程跟随——<b>全程无需触碰屏幕</b>，大屏汇报从容不迫。触屏滑动与方向键同步兼容。</p>
+      <div class="hc-spec">单手 21 点追踪<i>·</i>挥手翻页<i>·</i>捏合点选</div>
+    </article>
+    <article class="hcard">
+      <div class="hc-top"><span class="hc-id">04</span>
+        <span class="hc-ic"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.4"/><circle cx="6" cy="17" r="2.4"/><circle cx="17" cy="12" r="2.4"/><path d="M8.4 7.6 14.6 11M8.4 16.4 14.6 13"/></svg></span>
+      </div>
+      <div class="hc-en">TOUCH-TO-LINEAGE</div>
+      <h4>图谱漫游 · 数据血缘，触手可及</h4>
+      <p>图谱画布支持<b>拖拽平移、滚轮缩放、双指捏合、双击复位</b>；31 条血缘链路自由漫游，从源系统到领导看板的每一段来龙去脉，指尖一触即达。</p>
+      <div class="hc-spec">0.5×–2× 缩放<i>·</i>指针锚定<i>·</i>视口自适配</div>
+    </article>
+  </div>
+
+  <div class="home-sec"><i>02</i><b>面向决策的价值</b><s>WHY IT MATTERS</s></div>
+  <div class="home-values">
+    <div class="hv"><span>EFFICIENCY</span><b>决策提速</b>
+      <p>自然语言直达指标，答案开口可听；会议节奏不因翻页、检索与口径追问而中断，问答响应以秒计。</p></div>
+    <div class="hv"><span>ZERO LEARNING</span><b>零学习成本</b>
+      <p>会说话、会滑动即会使用。管理层与一线即开即上手，无需培训手册，人机协同无缝融入经营例会。</p></div>
+    <div class="hv"><span>OMNI-DEVICE</span><b>全端一致</b>
+      <p>语音、隔空手势、触屏、鼠标、键盘五模态统一交互语言：指挥舱大屏演示与移动端巡检，体验同源、规范同轨。</p></div>
+  </div>
+
+  <div class="home-spec">
+    <div class="hs-head"><span>03 ｜ INTERACTION SPEC · 交互规范速览</span><span>能力自适应 · 降级可用</span></div>
+    <div class="hs-grid">
+      <div><span>RECOGNITION</span><b>zh-CN <em>·</em> 实时转写</b></div>
+      <div><span>SYNTHESIS</span><b>1.05<em>×</em> 语速</b></div>
+      <div><span>AIR GESTURE</span><b>挥手 <em>·</em> 捏合</b></div>
+      <div><span>HAND TRACKING</span><b>21 <em>点</em> 骨架</b></div>
+      <div><span>FALLBACK</span><b>能力自适应 <em>·</em> 降级可用</b></div>
+      <div><span>A11Y</span><b>reduced-motion <em>兼容</em></b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 问数中心 ================= -->
+<section class="view" id="view-ask">
+  <div class="view-head">
+    <h2>对话式问数 · 用一句话得到带溯源的答案</h2>
+    <p>自然语言 → 意图识别 → 指标匹配 → 取数计算 → 图表呈现，每个回答附带数据源、取数时间与口径版本</p>
+  </div>
+
+  <div class="chat-wrap">
+    <div>
+      <div class="chat-card">
+        <div class="chat-bar"><span class="sig"></span><span>ChatBI · 智能问数引擎</span></div>
+        <div class="chat-log" id="chatLog"></div>
+        <div class="chat-input">
+          <input id="chatInput" placeholder="试试：上周终端销量怎么样？ / 国补贡献了多少？ / 哪个区县转化率最低？" autocomplete="off">
+          <button class="mic-btn" id="micBtn" title="语音问数：点击开始说话，识别后自动提问" aria-label="语音问数">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg>
+          </button>
+          <button onclick="sendMsg()">发 问</button>
+        </div>
+      </div>
+      <div class="chips" id="chips"></div>
+    </div>
+
+    <aside>
+      <div class="side-card">
+        <h4>今日经营速览</h4>
+        <div class="stat-row"><span class="k">终端销量（10月累计）</span><span class="v">0.98万部</span></div>
+        <div class="stat-row"><span class="k">融合捆绑率</span><span class="v">47.2%</span></div>
+        <div class="stat-row"><span class="k">进店成交转化率</span><span class="v">13.0%</span></div>
+        <div class="stat-row"><span class="k">国补核销占比</span><span class="v">46.7%</span></div>
+        <div class="stat-row"><span class="k">6个月在网保有率</span><span class="v" style="color:var(--gold)">88.4%</span></div>
+      </div>
+      <div class="side-card">
+        <h4>2026 政策监测</h4>
+        <ul class="policy">
+          <li><b>01-01</b> 数码产品国补实施：单件 ≤6000 元，全国统一标准，行业销量 <b>+44.8%</b></li>
+          <li><b>09-24</b> 「沃分期 / 0元购机」全面暂停新受理，线下锁客方式切换</li>
+          <li>两断点已写入全部指标口径，问数时自动做<b>前后对比与政策剥离</b></li>
+        </ul>
+      </div>
+      <div class="side-card">
+        <h4>溯源说明</h4>
+        <div class="policy" style="font-size:12px">每个回答右下角标注：<br>
+        ① 源系统　② 取数时间　③ 口径版本<br>
+        ④ 「查血缘」跳转数据图谱，查看该指标从源表到呈现的完整链路</div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= 经营看板 ================= -->
+<section class="view" id="view-board">
+  <div class="view-head">
+    <h2>经营看板 · 一屏五灯 · 异常自动标红</h2>
+    <p>北极星指标 5 项 ｜ 断点标注政策事件 ｜ 卡片可点击跳转血缘</p>
+  </div>
+
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <div class="charts">
+    <div class="chart-card">
+      <h3>月度终端销量趋势与政策断点<span class="hint">2025.01 – 2026.10 · 万部</span></h3>
+      <div class="sub">2026年YTD 9.90万部 · 同比 +46.7%（行业以旧换新口径 +44.8%）</div>
+      <div class="chart-body" id="chartTrend"></div>
+      <div class="legend"><span><i style="background:#2563eb"></i>2025</span><span><i style="background:#e60012"></i>2026</span><span><i style="background:#b45309"></i>政策断点</span></div>
+      <div class="footnote"><b>溯源</b> 厅店POS/进销存 · 取数 2026-10-29 08:00 · 口径 v2026.10-r3 · 同店口径已剔除新开厅</div>
+    </div>
+    <div class="chart-card">
+      <h3>价位结构分布<span class="hint">YTD · 占比</span></h3>
+      <div class="sub">国补上限 6000 元 → 6000+ 价位段为无补贴区，需重点攻坚</div>
+      <div class="chart-body" id="chartPrice"></div>
+      <div class="footnote"><b>溯源</b> POS开票明细 · 与国补核销平台交叉核验</div>
+    </div>
+  </div>
+
+  <div class="charts-row2">
+    <div class="chart-card">
+      <h3>区县销量排行<span class="hint">YTD · 万部</span></h3>
+      <div class="chart-body" id="chartDistrict"></div>
+      <div class="footnote"><b>溯源</b> 分公司报送 + POS回流</div>
+    </div>
+    <div class="chart-card">
+      <h3>客流—体验—成交漏斗<span class="hint">10月</span></h3>
+      <div class="chart-body" id="chartFunnel"></div>
+      <div class="footnote"><b>溯源</b> 客流计数设备 + POS开票（同店28家）</div>
+    </div>
+    <div class="chart-card">
+      <h3>分期停办前后对比<span class="hint">日均销量 · 万部</span></h3>
+      <div class="chart-body" id="chartFenqi"></div>
+      <div class="footnote"><b>溯源</b> POS受理时间戳 · 断点 2026-09-24</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 数据图谱 ================= -->
+<section class="view" id="view-graph">
+  <div class="view-head">
+    <h2>数据图谱 · 指标血缘与实体关系</h2>
+    <p>点击任意节点查看口径定义、计算公式与完整血缘链路；悬停高亮关联路径 · 实现「每个数字都可溯源」</p>
+  </div>
+
+  <div class="graph-wrap">
+    <div>
+      <div class="graph-canvas">
+        <div class="layout-switch">
+          <button data-layout="tree" class="on" title="按数据分层的层级布局">层级</button>
+          <button data-layout="circular" title="按类别环形排布 · 连边着色（Circular）">环形</button>
+        </div>
+        <div class="graph-inner" id="graphInner">
+          <svg id="edges" width="1180" height="640"></svg>
+        </div>
+      </div>
+      <div class="legend-graph">
+        <span><i style="display:inline-block;width:10px;height:10px;background:#2563eb;border-radius:2px;margin-right:6px;vertical-align:-1px"></i>源系统</span>
+        <span><i style="display:inline-block;width:10px;height:10px;background:#b45309;border-radius:2px;margin-right:6px;vertical-align:-1px"></i>加工层</span>
+        <span><i style="display:inline-block;width:10px;height:10px;background:#e60012;border-radius:2px;margin-right:6px;vertical-align:-1px"></i>指标层</span>
+        <span><i style="display:inline-block;width:10px;height:10px;background:#0f766e;border-radius:2px;margin-right:6px;vertical-align:-1px"></i>应用层</span>
+        <span>点击节点 → 右侧显示血缘 ｜ 悬停 → 高亮连边 ｜ 拖拽平移 · 滚轮/双指缩放 · 双击复位 ｜ 右上角切换 层级/环形 布局</span>
+      </div>
+    </div>
+
+    <aside class="detail" id="detail">
+      <div class="hint-empty">◈ 未选择节点<br><br>请在左侧图谱中点击任意节点——<br><br>· 点<b style="color:var(--red-soft)">源系统</b>：查看接入表与更新频率<br>· 点<b style="color:var(--red-soft)">指标</b>：查看口径公式与上下游血缘<br>· 点<b style="color:var(--red-soft)">应用</b>：查看该场景用了哪些指标<br><br>支持从问数中心回答中一键「查血缘」跳转。</div>
+    </aside>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <span>北京联通 · 终端运营智能指挥舱 PROTOTYPE v1.0</span>
+  <span>演示数据均为模拟，生产环境对接 BSS / POS / CRM / 国补核销平台</span>
+  <span>溯源机制：源系统 + 取数时间 + 口径版本 + 血缘链路</span>
+</footer>
+
+<!-- ================= 隔空手势浮窗 ================= -->
+<div class="air-dock" id="airDock" hidden>
+  <div class="ad-head"><span class="sig"></span><span>AIR GESTURE · 隔空手势</span><button id="airClose" aria-label="关闭隔空手势">✕</button></div>
+  <div class="ad-video"><video id="airVideo" autoplay playsinline muted></video><canvas id="airCanvas"></canvas></div>
+  <div class="ad-status" id="airStatus">未启动</div>
+  <div class="ad-tip">✋ 挥手翻页 ｜ 🤏 捏合点选 ｜ 掌心移动 = 光标</div>
+</div>
+<div class="air-cursor" id="airCursor" hidden></div>
+
+<script>
+/* ================= 基础数据（演示） ================= */
+const MONTHS = ["25-01","25-02","25-03","25-04","25-05","25-06","25-07","25-08","25-09","25-10","25-11","25-12",
+                "26-01","26-02","26-03","26-04","26-05","26-06","26-07","26-08","26-09","26-10"];
+const SALES  = [0.62,0.58,0.66,0.64,0.67,0.71,0.68,0.70,0.73,0.76,0.82,0.88,
+                0.92,0.88,0.99,1.01,1.03,1.05,1.02,1.08,0.94,0.98];
+const KPI = [
+  {id:"m1",name:"终端销量 YTD",val:"9.90",unit:"万部",d:"+46.7% 同比",cls:"good",spark:[60,58,66,92,88,99,101,103,105,102,108,94,98]},
+  {id:"m3",name:"融合捆绑率",val:"47.2",unit:"%",d:"+6.1pp 环比",cls:"good",spark:[38,39,40,41,42,43,44,45,46,46.5,47,47.2]},
+  {id:"m4",name:"客单价",val:"3286",unit:"元",d:"+4.8% 同比",cls:"good",spark:[3010,3050,3120,3160,3200,3180,3240,3260,3286]},
+  {id:"m5",name:"在网保有率(6个月)",val:"88.4",unit:"%",d:"-1.2pp · 预警",cls:"bad",spark:[91,90.8,90.5,90.1,89.8,89.4,89,88.7,88.4]},
+  {id:"m6",name:"收入净贡献",val:"2.14",unit:"亿元",d:"+12.3% 同比",cls:"good",spark:[140,150,158,166,172,180,188,196,204,214]}
+];
+const DISTRICT = [["朝阳",1.62],["海淀",1.41],["丰台",1.05],["昌平",0.88],["通州",0.82],["大兴",0.79],["西城",0.74],["顺义",0.63]];
+const PRICE = [["0-2000",23],["2000-4000",41],["4000-6000",27],["6000+",9]];
+const FUNNEL = [["进店客流",45.2,100],["体验互动",18.6,41.2],["开票成交",5.9,13.0]];
+const FENQI = [["9/1-9/23 日均",0.052],["9/24-10/31 日均",0.041]];
+
+/* ================= 工具：SVG 图表 ================= */
+function barSVG(data,opt){
+  opt=opt||{};
+  const w=520,h=opt.h||170,pad=28,n=data.length;
+  const max=Math.max(...data.map(d=>d.v))*1.15;
+  const bw=(w-pad*2)/n*0.62, gap=(w-pad*2)/n;
+  let s=`<svg viewBox="0 0 ${w} ${h}" width="100%">`;
+  for(let i=0;i<4;i++){const y=pad/2+(h-pad*1.6)*i/3;s+=`<line x1="${pad}" x2="${w-8}" y1="${y}" y2="${y}" stroke="#e9e7e1" stroke-dasharray="3 4"/>`;}
+  data.forEach((d,i)=>{
+    const bh=(h-pad*1.9)*(d.v/max);
+    const x=pad+gap*i+(gap-bw)/2, y=h-pad*1.2-bh;
+    const c=d.c||(opt.color||"#e60012");
+    s+=`<rect x="${x}" y="${h-pad*1.2}" width="${bw}" height="0" fill="${c}" opacity=".9" rx="1">
+        <animate attributeName="height" to="${bh}" dur="0.7s" fill="freeze" begin="${i*0.05}s"/>
+        <animate attributeName="y" to="${y}" dur="0.7s" fill="freeze" begin="${i*0.05}s"/></rect>`;
+    s+=`<text x="${x+bw/2}" y="${h-pad*1.2+13}" fill="#6b7280" font-size="9.5" text-anchor="middle" font-family="IBM Plex Mono">${d.l}</text>`;
+    s+=`<text x="${x+bw/2}" y="${y-5}" fill="#20242a" font-size="10" text-anchor="middle" font-family="IBM Plex Mono">${d.t||d.v}</text>`;
+  });
+  s+=`</svg>`;return s;
+}
+function hbarSVG(rows,opt){
+  opt=opt||{};const w=460,rh=opt.rh||26,h=rows.length*rh+14;
+  const max=Math.max(...rows.map(r=>r[1]));
+  let s=`<svg viewBox="0 0 ${w} ${h}" width="100%">`;
+  rows.forEach((r,i)=>{
+    const y=i*rh+8, bw=(w-130)*(r[1]/max);
+    s+=`<text x="0" y="${y+12}" fill="#20242a" font-size="11.5" font-family="Noto Sans SC">${r[0]}</text>`;
+    s+=`<rect x="52" y="${y+2}" width="${bw}" height="13" fill="url(#gb)" rx="1" opacity="0"><animate attributeName="opacity" to="1" dur=".5s" begin="${i*.06}s" fill="freeze"/></rect>`;
+    s+=`<text x="${56+bw}" y="${y+13}" fill="#b45309" font-size="10.5" font-family="IBM Plex Mono">${r[2]!==undefined?r[2]:r[1]}</text>`;
+  });
+  s+=`<defs><linearGradient id="gb" x1="0" x2="1"><stop offset="0" stop-color="#e60012"/><stop offset="1" stop-color="#ff7a4d"/></linearGradient></defs></svg>`;
+  return s;
+}
+function donutSVG(pct,label){
+  const r=52,c=2*Math.PI*r,fill=c*pct/100;
+  return `<svg viewBox="0 0 150 150" width="140" height="140" style="display:block;margin:0 auto">
+   <circle cx="75" cy="75" r="${r}" fill="none" stroke="#e9e7e1" stroke-width="15"/>
+   <circle cx="75" cy="75" r="${r}" fill="none" stroke="#e60012" stroke-width="15" stroke-linecap="round"
+     stroke-dasharray="${fill} ${c}" transform="rotate(-90 75 75)">
+     <animate attributeName="stroke-dasharray" from="0 ${c}" to="${fill} ${c}" dur="1s" fill="freeze"/></circle>
+   <text x="75" y="70" text-anchor="middle" fill="#20242a" font-size="26" font-family="IBM Plex Mono" font-weight="600">${pct}%</text>
+   <text x="75" y="92" text-anchor="middle" fill="#6b7280" font-size="10.5" font-family="Noto Sans SC">${label}</text></svg>`;
+}
+function trendSVG(){
+  const w=700,h=250,pl=36,pr=14,pt=24,pb=34;
+  const max=1.25,iw=w-pl-pr,ih=h-pt-pb;
+  const X=i=>pl+iw*i/(SALES.length-1), Y=v=>pt+ih*(1-v/max);
+  let line25="",line26="";
+  SALES.forEach((v,i)=>{
+    const seg=`${i===0?"M":"L"}${X(i).toFixed(1)},${Y(v).toFixed(1)} `;
+    if(i<12) line25+=seg; else line26+=(i===12?`M${X(i).toFixed(1)},${Y(v).toFixed(1)} `:seg);
+  });
+  let s=`<svg viewBox="0 0 ${w} ${h}" width="100%">`;
+  s+=`<defs><linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e60012" stop-opacity=".14"/><stop offset="1" stop-color="#e60012" stop-opacity="0"/></linearGradient></defs>`;
+  for(let g=0;g<=5;g++){const y=pt+ih*g/5;s+=`<line x1="${pl}" x2="${w-pr}" y1="${y}" y2="${y}" stroke="#e9e7e1" stroke-dasharray="3 5"/>
+   <text x="4" y="${y+4}" fill="#8a93a0" font-size="9" font-family="IBM Plex Mono">${(max*(1-g/5)).toFixed(1)}</text>`;}
+  s+=`<path d="${line26} L${X(21)},${pt+ih} L${X(12)},${pt+ih} Z" fill="url(#area)"/>`;
+  s+=`<path d="${line25}" stroke="#2563eb" stroke-width="2" fill="none" stroke-dasharray="600" stroke-dashoffset="600"><animate attributeName="stroke-dashoffset" to="0" dur="1.2s" fill="freeze"/></path>`;
+  s+=`<path d="${line26}" stroke="#e60012" stroke-width="2.4" fill="none" stroke-dasharray="800" stroke-dashoffset="800"><animate attributeName="stroke-dashoffset" to="0" dur="1.2s" begin=".4s" fill="freeze"/></path>`;
+  // 政策断点
+  [[12,"01-01 国补实施"],[20,"09-24 分期停办"]].forEach(([i,t])=>{
+    s+=`<line x1="${X(i)}" x2="${X(i)}" y1="${pt}" y2="${pt+ih}" stroke="#b45309" stroke-width="1.2" stroke-dasharray="4 4"/>
+        <text x="${X(i)+5}" y="${pt+11}" fill="#b45309" font-size="9.5" font-family="Noto Sans SC">${t}</text>`;
+  });
+  SALES.forEach((v,i)=>{
+    if(i>=12) s+=`<circle cx="${X(i)}" cy="${Y(v)}" r="3.2" fill="#ffffff" stroke="#e60012" stroke-width="1.8"/>`;
+    if(i%2===0||i>=12) s+=`<text x="${X(i)}" y="${h-10}" fill="#8a93a0" font-size="8.5" text-anchor="middle" font-family="IBM Plex Mono">${MONTHS[i]}</text>`;
+  });
+  s+=`</svg>`;return s;
+}
+function funnelSVG(){
+  const w=430,h=190;let s=`<svg viewBox="0 0 ${w} ${h}" width="100%">`;
+  const colors=["#2563eb","#b45309","#e60012"];
+  FUNNEL.forEach((f,i)=>{
+    const bw=(w-150)*(f[2]/100), y=22+i*56;
+    s+=`<rect x="${(w-bw)/2}" y="${y}" width="0" height="34" fill="${colors[i]}" opacity=".85" rx="2">
+      <animate attributeName="width" to="${bw}" dur=".8s" begin="${i*.15}s" fill="freeze"/>
+      <animate attributeName="x" to="${(w-bw)/2}" dur=".8s" begin="${i*.15}s" fill="freeze"/></rect>`;
+    s+=`<text x="${w/2}" y="${y+22}" text-anchor="middle" fill="#fff" font-size="12" font-family="IBM Plex Mono">${f[0]} ${f[1]}万 · ${f[2]}%</text>`;
+    if(i<2) s+=`<text x="${w/2}" y="${y+48}" text-anchor="middle" fill="#6b7280" font-size="10" font-family="IBM Plex Mono">↓ 转化 ${FUNNEL[i+1][2]/f[2]*100<100?(FUNNEL[i+1][2]/f[2]*100).toFixed(1):""}%</text>`;
+  });
+  s+=`</svg>`;return s;
+}
+function sparkSVG(arr,color){
+  const w=140,h=30,max=Math.max(...arr),min=Math.min(...arr);
+  const pts=arr.map((v,i)=>`${(i/(arr.length-1)*w).toFixed(1)},${(h-4-((v-min)/(max-min||1))*(h-8)).toFixed(1)}`).join(" ");
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="30"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.6" opacity=".85"/></svg>`;
+}
+
+/* ================= 看板渲染 ================= */
+function renderBoard(){
+  document.getElementById("chartTrend").innerHTML=trendSVG();
+  document.getElementById("chartPrice").innerHTML=hbarSVG(PRICE.map(p=>[p[0],p[1],p[1]+"%"]),{rh:34});
+  document.getElementById("chartDistrict").innerHTML=hbarSVG(DISTRICT.map(d=>[d[0],d[1],d[1]+"万"]),{rh:28});
+  document.getElementById("chartFunnel").innerHTML=funnelSVG();
+  document.getElementById("chartFenqi").innerHTML=donutSVG(-21,"停办后日均变化")+
+    `<div style="text-align:center;font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:4px">0.052 → 0.041 万部/日 · 融合承接缺口</div>`;
+  const g=document.getElementById("kpiGrid");
+  g.innerHTML=KPI.map(k=>`
+    <div class="kpi ${k.cls}" onclick="jumpMetric('${k.id}')" title="点击查看血缘">
+      <div class="kname">${k.name}<span class="light"></span></div>
+      <div class="kval">${k.val}<small>${k.unit}</small></div>
+      <div class="kdelta ${k.cls==="bad"?"down":k.cls==="warn"?"warn":"up"}">${k.d}</div>
+      <div class="spark">${sparkSVG(k.spark,k.cls==="bad"?"#dc2626":"#16a34a")}</div>
+    </div>`).join("");
+}
+
+/* ================= 问数引擎 ================= */
+const ANSWERS=[
+ {k:["血缘","口径","图谱","数据源","来源","溯源"],t:"指标血缘与口径查询",
+  f:()=>`口径与血缘请在 <strong>数据图谱</strong> 中查看：从源系统 → 加工层 → 指标层 → 应用层的完整链路，每个指标含定义、计算公式、更新频率与负责人。已为你切换标签页。`,
+  jump:"graph"},
+ {k:["概览","汇总","总体","经营情况","怎么样","今日"],w:3,t:"今日经营速览（2026-10-29）",
+  f:()=>`10月累计终端销量 <strong>0.98万部</strong>，融合捆绑率 <em>47.2%</em>，进店成交转化率 <em>13.0%</em>；<strong>6个月在网保有率 88.4%</strong> 已连续 4 个月下滑，触发<span style="color:#dc2626">红色预警</span>——主因国补机保有率仅 84.2%。`,
+  chart:()=>`<div class="kpi-mini">${KPI.map(k=>`<div><span>${k.name}</span><b>${k.val}${k.unit}</b> <i class="${k.cls==="bad"?"down":"up"}">${k.d}</i></div>`).join("")}</div>`,
+  metric:"m1"},
+ {k:["上周","本周","最近一周","这周"],t:"上周终端销量（第43周 · 10.20–10.26）",
+  f:()=>`上周销量 <strong>0.24万部</strong>，环比 <span style="color:#dc2626">-3.1%</span>；工作日日均 0.031 万部、周末日均 0.046 万部，周末贡献 57%。回落主因：9/24 分期停办后价格敏感客户观望。`,
+  chart:()=>barSVG([["10/20",.031],["10/21",.029],["10/22",.033],["10/23",.030],["10/24",.036],["10/25",.049],["10/26",.044]].map(d=>({l:d[0].split("/")[1],v:d[1]*1000,t:(d[1]*1000).toFixed(0)})),{color:"#2563eb"}),
+  metric:"m1"},
+ {k:["国补","以旧换新","补贴"],t:"国补对销量的贡献拆分（YTD）",
+  f:()=>`国补核销 <strong>4.62万部</strong>，占总销量 <em>46.7%</em>；剥离国补后内生增长 <strong>+18.9%</strong>（行业大盘 +44.8%）。结论：<span style="color:#b45309">约 58% 的增量来自政策，42% 来自运营</span>。`,
+  chart:()=>`<div style="display:flex;gap:16px;align-items:center;justify-content:center">${donutSVG(46.7,"国补销量占比")}<div style="font-family:var(--mono);font-size:11.5px;line-height:2.1;color:var(--dim)">国补核销　<strong style="color:#20242a">4.62万部</strong><br>非国补　　<strong style="color:#20242a">5.28万部</strong><br>内生同比　<strong style="color:#16a34a">+18.9%</strong><br>政策贡献　<strong style="color:#b45309">≈58%增量</strong></div></div>`,
+  metric:"m1"},
+ {k:["分期","沃分期","0元购机","停办","合约机停"],t:"分期停办（9/24）前后影响",
+  f:()=>`日均销量由 <strong>0.052</strong> 降至 <em>0.041万部/日（-21.4%）</em>；4000元以上价位段受影响最大（-28%）。替代承接：融合捆绑率同期 <strong>+3.4pp</strong>，以旧换新核销 +11%，覆盖了约六成缺口。`,
+  chart:()=>barSVG(FENQI.map(f=>({l:f[0].split(" ")[0],v:f[1]*1000,t:f[1]})),{color:"#b45309"}),
+  metric:"m1"},
+ {k:["转化率","进店","客流","漏斗"],t:"客流—体验—成交漏斗（10月 · 同店28家）",
+  f:()=>`进店客流 <strong>45.2万</strong> → 体验互动 <strong>18.6万（41.2%）</strong> → 开票成交 <strong>5.9万（总转化 13.0%）</strong>。短板在<span style="color:#dc2626">体验→成交第二段</span>：标杆厅为 46%，末位厅不足 20%。`,
+  chart:()=>funnelSVG(),
+  metric:"m2"},
+ {k:["区县","哪个区","排名","区的","朝阳","海淀"],t:"区县销量与转化排名",
+  f:()=>`销量前三：<strong>朝阳 1.62万 / 海淀 1.41万 / 丰台 1.05万</strong>；但转化率末位为 <span style="color:#dc2626">西城 9.8%</span>（客流不低、成交差）——建议核查西城 3 家厅的体验动线与话术执行。`,
+  chart:()=>hbarSVG(DISTRICT,{rh:27}),
+  metric:"m2"},
+ {k:["融合","捆绑","合约","宽带"],t:"融合捆绑率与长期价值",
+  f:()=>`融合捆绑率 <strong>47.2%</strong>（目标 50%，环比 +6.1pp）。关键证据：捆绑用户 6个月在网保有 <strong>93.1%</strong>，单机销售仅 <em>79.6%</em> ——<span style="color:#16a34a">每提升 10pp 捆绑率 ≈ 保有率 +1.4pp</span>。`,
+  chart:()=>barSVG([{l:"捆绑用户",v:93.1,t:"93.1%"},{l:"单机用户",v:79.6,t:"79.6%"},{l:"总体",v:88.4,t:"88.4%"}],{color:"#0f766e"}),
+  metric:"m3"},
+ {k:["在网","保有","流失","离网","留存"],t:"在网保有率预警（6个月）",
+  f:()=>`总体 <strong>88.4%</strong>（-1.2pp，红色预警）。结构拆解：国补机 <span style="color:#dc2626">84.2%</span> vs 非国补机 <strong>91.8%</strong> ——补贴吸引了价格敏感型用户，换机后易离网。建议：考核从"销量单指标"转向"销量+保有"双指标。`,
+  chart:()=>barSVG([{l:"国补机",v:84.2,t:"84.2%"},{l:"非国补",v:91.8,t:"91.8%"},{l:"总体",v:88.4,t:"88.4%"}],{color:"#dc2626"}),
+  metric:"m5"},
+ {k:["客单价","均价","价位","价格"],t:"客单价与价位结构",
+  f:()=>`客单价 <strong>3286元（+4.8%）</strong>。结构上 2000–4000 元段占 <em>41%</em> 为主力；<span style="color:#b45309">6000+ 仅占 9%</span>——国补上限 6000 元形成价格天花板，高端段需以"以旧换新折抵+权益包"切入。`,
+  chart:()=>hbarSVG(PRICE.map(p=>[p[0],p[1],p[1]+"%"]),{rh:32}),
+  metric:"m4"},
+ {k:["连带","配件","碎屏","附件"],t:"连带率与提升空间",
+  f:()=>`当前配件+服务连带率 <strong>31.5%</strong>，标杆厅 <em>46%</em>，行业捆绑渗透目标 <strong>≥50%</strong>。按每单件数 11→13 的标杆测算，全量达标可增毛利约 <strong>8%</strong>。建议：连带菜单上墙 + 店员复合计酬。`,
+  chart:()=>barSVG([{l:"当前",v:31.5,t:"31.5%"},{l:"标杆厅",v:46,t:"46%"},{l:"行业目标",v:50,t:"50%"}],{color:"#b45309"}),
+  metric:"m4"}
+];
+const SRC={sys:"BSS/CBS + 厅店POS + 国补核销平台",time:"2026-10-29 08:00",ver:"v2026.10-r3"};
+
+function matchAnswer(q){
+  let best=null,bestScore=0;
+  ANSWERS.forEach(a=>{
+    let s=0;a.k.forEach(k=>{if(q.includes(k))s+=(a.w||1)*2;});
+    if(s>bestScore){bestScore=s;best=a;}
+  });
+  return bestScore>0?best:ANSWERS[1];
+}
+function pushMsg(cls,who,html){
+  const log=document.getElementById("chatLog");
+  const el=document.createElement("div");
+  el.className="msg "+cls;
+  el.innerHTML=`<div class="who">${who}</div><div class="bubble">${html}</div>`;
+  log.appendChild(el);log.scrollTop=log.scrollHeight;
+}
+function askAI(q){
+  pushMsg("me","我",q.replace(/</g,"&lt;"));
+  setTimeout(()=>{
+    const a=matchAnswer(q);
+    const chart=a.chart?`<div class="a-chart"><div class="ct">${a.t} · 可视化</div>${a.chart()}</div>`:"";
+    const btn=a.jump?`<button class="mini-btn" onclick="switchTab('graph')">查看数据图谱 →</button>`
+      :`<button class="mini-btn" onclick="jumpMetric('${a.metric||"m1"}')">查血缘 →</button>`;
+    pushMsg("ai","ChatBI",
+      `<div class="a-title">${a.t}</div>${a.f()}${chart}
+       <div class="a-src">
+         <span><span class="tag">源</span> ${SRC.sys} ｜ ${SRC.time} ｜ 口径 ${SRC.ver}</span>${btn}
+       </div>`);
+    if(a.jump)setTimeout(()=>switchTab("graph"),900);
+    attachSpeak(document.getElementById("chatLog").lastElementChild,
+      a.t+"。"+a.f().replace(/<[^>]+>/g," ").replace(/&[a-z]+;/g,""));
+  },480);
+}
+function sendMsg(){
+  const inp=document.getElementById("chatInput");
+  const q=inp.value.trim();if(!q)return;inp.value="";askAI(q);
+}
+document.getElementById("chatInput").addEventListener("keydown",e=>{if(e.key==="Enter")sendMsg();});
+const CHIPS=["上周终端销量怎么样？","国补贡献了多少？","分期停办后销量变化？","融合捆绑率和在网率什么关系？","哪个区县转化率最低？","连带率提升空间有多大？","今天经营情况怎么样？","这个指标的血缘怎么查？"];
+document.getElementById("chips").innerHTML=CHIPS.map(c=>`<button class="chip" onclick="askAI('${c}')">${c}</button>`).join("");
+
+/* ================= 语音交互 ================= */
+function speakBtn(btn){
+  const synth=window.speechSynthesis;
+  if(!synth||!window.SpeechSynthesisUtterance){
+    btn.textContent="不支持";setTimeout(()=>btn.textContent="播报",1600);return;
+  }
+  const wasOn=btn.classList.contains("on");
+  document.querySelectorAll(".speak-btn").forEach(b=>{b.classList.remove("on");b.textContent="播报";});
+  synth.cancel();
+  if(wasOn)return;
+  const u=new SpeechSynthesisUtterance(btn._text||"");
+  u.lang="zh-CN";u.rate=1.05;u.pitch=1;
+  const done=()=>{if(btn.classList.contains("on")){btn.classList.remove("on");btn.textContent="播报";}};
+  u.onend=done;u.onerror=done;
+  btn.classList.add("on");btn.textContent="停止";
+  setTimeout(()=>synth.speak(u),80);
+}
+function attachSpeak(msgEl,text){
+  if(!msgEl)return;
+  const b=document.createElement("button");
+  b.type="button";b.className="speak-btn";b.textContent="播报";
+  b._text=text.replace(/[｜|]/g,"。").replace(/\s+/g," ").trim();
+  b.onclick=()=>speakBtn(b);
+  msgEl.querySelector(".bubble").appendChild(b);
+}
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const micBtn=document.getElementById("micBtn");
+const chatInput=document.getElementById("chatInput");
+const PH=chatInput.placeholder;
+let recog=null,listening=false,hold=false,restartT=0;
+function listenUI(on){
+  listening=on;micBtn.classList.toggle("on",on);
+  chatInput.placeholder=on?"正在聆听… 可连续提问，说完自动识别":PH;
+}
+function stopSpeech(){
+  if(window.speechSynthesis)speechSynthesis.cancel();
+  document.querySelectorAll(".speak-btn").forEach(b=>{b.classList.remove("on");b.textContent="播报";});
+}
+if(SR){
+  recog=new SR();recog.lang="zh-CN";recog.interimResults=true;recog.continuous=true;recog.maxAlternatives=1;
+  /* 启动一次会话；上一次会话尚未完全关闭时 start() 会抛错 → 延迟重试一次 */
+  function kick(){
+    if(!hold)return;
+    try{recog.start();}catch(_){
+      clearTimeout(restartT);
+      restartT=setTimeout(()=>{if(!hold)return;try{recog.start();}catch(__){hold=false;listenUI(false);}},320);
+    }
+  }
+  recog.onstart=()=>listenUI(true);
+  recog.onresult=e=>{
+    let t="",final=false;
+    for(let i=0;i<e.results.length;i++){t+=e.results[i][0].transcript;if(e.results[i].isFinal)final=true;}
+    chatInput.value=t.trim();
+    if(final){
+      const v=chatInput.value;chatInput.value="";
+      if(v)askAI(v);
+      /* 不停止聆听：onend 自动重启会话，可继续问下一句 */
+    }
+  };
+  recog.onerror=ev=>{
+    if(ev.error==="not-allowed"||ev.error==="service-not-allowed"){
+      hold=false;listenUI(false);
+      chatInput.placeholder="麦克风权限被拒绝，请在浏览器地址栏允许麦克风";
+      setTimeout(()=>chatInput.placeholder=PH,3000);
+    }else if(ev.error==="network"){
+      /* 语音服务抖动：给出提示但仍保持聆听状态，等 onend 自动重连 */
+      chatInput.placeholder="语音服务连接中… 若持续无响应可直接打字提问";
+      setTimeout(()=>{if(!listening)chatInput.placeholder=PH;},3400);
+    }else if(ev.error==="no-speech"||ev.error==="aborted"){
+      /* 未说话/被中断：静默自动续听 */
+    }
+  };
+  recog.onend=()=>{
+    listenUI(false);
+    if(hold){clearTimeout(restartT);restartT=setTimeout(kick,240);}
+  };
+  micBtn.onclick=()=>{
+    stopSpeech();
+    if(hold){hold=false;clearTimeout(restartT);try{recog.stop();}catch(_){}listenUI(false);chatInput.placeholder=PH;}
+    else{hold=true;kick();}
+  };
+}else{
+  micBtn.style.opacity=".45";
+  micBtn.onclick=()=>{
+    const o=chatInput.placeholder;
+    chatInput.placeholder="当前浏览器不支持语音识别，建议使用最新版 Chrome / Edge";
+    setTimeout(()=>chatInput.placeholder=o,2600);
+  };
+}
+
+/* ================= 数据图谱 ================= */
+const NODES=[
+ // 源系统
+ {id:"s1",c:"src",x:20,y:40, t:"SOURCE",n:"BSS/CBS 出账受理"},
+ {id:"s2",c:"src",x:20,y:145,t:"SOURCE",n:"厅店 POS / 进销存"},
+ {id:"s3",c:"src",x:20,y:250,t:"SOURCE",n:"客流计数设备"},
+ {id:"s4",c:"src",x:20,y:355,t:"SOURCE",n:"国补核销平台"},
+ {id:"s5",c:"src",x:20,y:460,t:"SOURCE",n:"CRM 融合受理"},
+ {id:"s6",c:"src",x:20,y:565,t:"SOURCE",n:"10010 投诉工单"},
+ // 加工层
+ {id:"t1",c:"mid",x:330,y:70, t:"MODEL",n:"日销售明细表"},
+ {id:"t2",c:"mid",x:330,y:210,t:"MODEL",n:"客流转化宽表"},
+ {id:"t3",c:"mid",x:330,y:350,t:"MODEL",n:"融合受理宽表"},
+ {id:"t4",c:"mid",x:330,y:490,t:"MODEL",n:"用户分层 RFMS"},
+ // 指标层
+ {id:"m1",c:"met",x:645,y:40, t:"METRIC",n:"终端销量"},
+ {id:"m2",c:"met",x:645,y:150,t:"METRIC",n:"进店成交转化率"},
+ {id:"m3",c:"met",x:645,y:260,t:"METRIC",n:"融合捆绑率"},
+ {id:"m4",c:"met",x:645,y:370,t:"METRIC",n:"客单价 & 连带率"},
+ {id:"m5",c:"met",x:645,y:480,t:"METRIC",n:"在网保有率"},
+ {id:"m6",c:"met",x:645,y:575,t:"METRIC",n:"收入净贡献"},
+ // 应用层
+ {id:"a1",c:"app",x:960,y:120,t:"APP",n:"领导一屏看板"},
+ {id:"a2",c:"app",x:960,y:300,t:"APP",n:"对话式问数"},
+ {id:"a3",c:"app",x:960,y:480,t:"APP",n:"厅店考核计酬"}
+];
+const EDGES=[["s1","t1"],["s2","t1"],["s2","t2"],["s3","t2"],["s4","t1"],["s5","t3"],["s1","t4"],["s5","t4"],["s6","t4"],
+ ["t1","m1"],["t4","m1"],["t2","m2"],["t3","m3"],["t1","m4"],["t4","m5"],["t3","m5"],["t1","m6"],["t3","m6"],["t4","m6"],
+ ["m1","a1"],["m2","a1"],["m3","a1"],["m4","a1"],["m5","a1"],["m6","a1"],
+ ["m1","a2"],["m3","a2"],["m5","a2"],["m1","a3"],["m3","a3"],["m5","a3"]];
+const DETAIL={
+ s1:{type:"源系统 · SOURCE",d:"BSS/CBS 出账与受理系统",items:[["接入内容","用户账单、套餐受理、融合发展受理记录"],["更新频率","T+1 全量同步"],["数据负责人","信息化部 · 数据组"],["接入表","dwd_bill_daily / dwd_package_accept"]] },
+ s2:{type:"源系统 · SOURCE",d:"厅店 POS / 终端进销存",items:[["接入内容","开票流水、机型、价位、柜台库存、店员工号"],["更新频率","准实时（5分钟增量）"],["数据负责人","渠道运营部 · 零售组"],["接入表","ods_pos_order / ods_stock_io"]] },
+ s3:{type:"源系统 · SOURCE",d:"客流计数设备",items:[["接入内容","进店人次、驻留热区、体验机互动"],["更新频率","15分钟"],["数据负责人","渠道运营部 · 动线组"],["接入表","ods_store_traffic"]] },
+ s4:{type:"源系统 · SOURCE",d:"国补核销平台",items:[["接入内容","核销单量、机型、补贴金额、回收凭证"],["更新频率","T+1"],["数据负责人","市场部 · 政策组"],["接入表","ods_guobu_verify"]] },
+ s5:{type:"源系统 · SOURCE",d:"CRM 融合受理",items:[["接入内容","融合订单、装机地址、履约状态"],["更新频率","T+1"],["数据负责人","存量经营部"],["接入表","ods_crm_bundle"]] },
+ s6:{type:"源系统 · SOURCE",d:"10010 投诉工单",items:[["接入内容","投诉分类、终端相关工单、满意度"],["更新频率","T+1"],["数据负责人","客服部"],["接入表","ods_complaint_ticket"]] },
+ t1:{type:"加工层 · MODEL",d:"日销售明细表",items:[["口径说明","按开票日期 × 厅店 × 机型的日粒度汇总，剔除撤销单"],["计算逻辑","COUNT(开票单) / SUM(开票金额)"],["更新频率","每日 02:00"],["上下游","← BSS、POS、国补核销 ｜ → 销量、客单价、收入净贡献"]] },
+ t2:{type:"加工层 · MODEL",d:"客流转化宽表",items:[["口径说明","同店口径（营业满30天）客流与开票按厅·日关联"],["计算逻辑","成交单量 ÷ 进店客流"],["更新频率","每日 03:00"],["上下游","← POS、客流设备 ｜ → 进店成交转化率"]] },
+ t3:{type:"加工层 · MODEL",d:"融合受理宽表",items:[["口径说明","购机单与融合套餐/宽带受理 7 日内关联才算捆绑"],["计算逻辑","捆绑单 ÷ 购机单"],["更新频率","每日 03:00"],["上下游","← CRM、BSS ｜ → 融合捆绑率、在网保有率、收入净贡献"]] },
+ t4:{type:"加工层 · MODEL",d:"用户分层 RFMS",items:[["口径说明","R最近消费 / F频次 / M金额 / S社交活跃 四维分层"],["计算逻辑","核心价值层 · 高潜力层 · 维护层 · 沉默层"],["更新频率","每周一 06:00"],["上下游","← BSS、CRM、投诉 ｜ → 在网保有率、精准触达"]] },
+ m1:{type:"指标层 · METRIC",d:"终端销量",items:[["口径定义","统计期内北京联通所属厅店手机终端开票台数（剔除撤销/退货）"],["计算公式","SUM(开票数量) WHERE 终端类型=手机 AND 状态=有效"],["统计周期","日 / 周 / 月 / YTD"],["更新频率","T+1 · 每日 08:00"],["数据负责人","渠道运营部 · 数据分析岗"],["政策标记","按国补/非国补打标，支持政策剥离计算"]] },
+ m2:{type:"指标层 · METRIC",d:"进店成交转化率",items:[["口径定义","同店口径下开票成交单量占进店客流比"],["计算公式","开票成交单 ÷ 进店客流 × 100%（同店满30天）"],["统计周期","月"],["更新频率","T+1 · 每日 08:00"],["数据负责人","渠道运营部"]] },
+ m3:{type:"指标层 · METRIC",d:"融合捆绑率",items:[["口径定义","购机后7日内关联融合套餐/宽带受理的订单占比"],["计算公式","融合捆绑单 ÷ 终端开票单 × 100%"],["统计周期","月"],["更新频率","T+1 · 每日 08:00"],["数据负责人","存量经营部"]] },
+ m4:{type:"指标层 · METRIC",d:"客单价 & 连带率",items:[["口径定义","客单价=开票金额/单数；连带率=每单商品件数（含配件与服务包）"],["计算公式","AOV = Σ金额 ÷ 单数 ｜ 连带 = Σ件数 ÷ 单数"],["统计周期","周 / 月"],["更新频率","T+1"],["数据负责人","零售运营岗"]] },
+ m5:{type:"指标层 · METRIC",d:"在网保有率（6个月）",items:[["口径定义","终端发展用户在发展后第6个月仍在网出账的比例"],["计算公式","第6月在网用户 ÷ 同期发展用户 × 100%"],["统计周期","月（同期群）"],["更新频率","月度 + 每日滚动预测"],["数据负责人","存量经营部 · 离网预警岗"],["预警规则","环比 -1pp 或 <90% 触发红色预警"]] },
+ m6:{type:"指标层 · METRIC",d:"收入净贡献",items:[["口径定义","终端及关联业务带来的收入净贡献（含出账、佣金、补贴成本）"],["计算公式","出账收入 − 渠道佣金 − 补贴成本 − 维系成本"],["统计周期","月"],["更新频率","月度结算 T+3"],["数据负责人","财务部 · 收入核算岗"]] },
+ a1:{type:"应用层 · APPLICATION",d:"领导一屏看板",items:[["使用指标","终端销量 / 融合捆绑率 / 客单价 / 在网保有率 / 收入净贡献"],["呈现方式","5 项北极星指标红黄绿状态灯 + 异常自动归因"],["推送","每日 08:30 自动推送，异常即时预警"],["访问对象","公司领导、部门负责人"]] },
+ a2:{type:"应用层 · APPLICATION",d:"对话式问数 ChatBI",items:[["使用指标","全部指标层 + 加工层下钻"],["呈现方式","自然语言 → 意图识别 → 指标匹配 → 图表 + 溯源脚注"],["口径保障","回答固定携带 源系统/取数时间/口径版本"],["访问对象","分析师、业务管理人员"]] },
+ a3:{type:"应用层 · APPLICATION",d:"厅店考核计酬",items:[["使用指标","终端销量、收入净贡献（双权重）、融合捆绑率、在网保有率"],["计酬逻辑","复合计分 = 销量×权重1 + 收入净贡献×权重2 + 保有率修正"],["更新","月度"],["访问对象","渠道运营、人力、店员"]] }
+};
+
+function buildGraph(){
+  const inner=document.getElementById("graphInner"),svg=document.getElementById("edges");
+  const colT=[["源系统 · SOURCE",20,16],["加工层 · MODEL",330,16],["指标层 · METRIC",645,16],["应用层 · APP",960,16]];
+  colT.forEach(([t,x,y])=>{const el=document.createElement("div");el.className="col-label";el.style.left=x+"px";el.style.top=y+"px";el.textContent=t;inner.appendChild(el);});
+  const pos={};
+  NODES.forEach(n=>{
+    pos[n.id]=n;
+    const el=document.createElement("div");
+    el.className="gnode "+n.c;el.id="n_"+n.id;
+    el.style.left=n.x+"px";el.style.top=n.y+"px";
+    el.innerHTML=`<span class="gt">${n.t}</span><span class="gn">${n.n}</span>`;
+    el.onclick=e=>{e.stopPropagation();selectNode(n.id);};
+    el.onmouseenter=()=>hoverNode(n.id,true);
+    el.onmouseleave=()=>hoverNode(n.id,false);
+    inner.appendChild(el);
+  });
+  EDGES.forEach(([a,b],i)=>{
+    const A=pos[a],B=pos[b];
+    const x1=A.x+172,y1=A.y+26,x2=B.x,y2=B.y+26;
+    const mid=(x1+x2)/2;
+    const p=document.createElementNS("http://www.w3.org/2000/svg","path");
+    p.setAttribute("d",`M${x1},${y1} C${mid},${y1} ${mid},${y2} ${x2},${y2}`);
+    p.dataset.a=a;p.dataset.b=b;p.dataset.i=i;
+    p.style.setProperty("--ec",CAT_COL[pos[a].c]);   /* 环形模式下按源类别着色 */
+    svg.appendChild(p);
+  });
+}
+/* ---- 布局切换：层级（分层） ⇄ 环形（Circular，类别分组 + 向心着色弧线） ---- */
+const CAT_COL={src:"#2563eb",mid:"#b45309",met:"#e60012",app:"#0f766e"};
+let graphLayout="tree", graphSel=null;
+function nodePos(n,mode){
+  if(mode==="circular"){
+    const N=NODES.length,i=NODES.indexOf(n);
+    const ang=-Math.PI/2+i*2*Math.PI/N;               /* 顺时针均布，起点在正上方 */
+    return {x:Math.round(590+505*Math.cos(ang)),y:Math.round(320+250*Math.sin(ang))};
+  }
+  return {x:n.x,y:n.y};
+}
+function edgePath(a,b,mode){
+  if(mode==="circular"){
+    /* 控制点向圆心内拉 30% → ECharts circular 式向心弧线 */
+    const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
+    const cx=mx+(590-mx)*0.30, cy=my+(320-my)*0.30;
+    return `M${a.x},${a.y} Q${cx.toFixed(1)},${cy.toFixed(1)} ${b.x},${b.y}`;
+  }
+  const x1=a.x+172,y1=a.y+26,x2=b.x,y2=b.y+26,mid=(x1+x2)/2;
+  return `M${x1},${y1} C${mid},${y1} ${mid},${y2} ${x2},${y2}`;
+}
+function setGraphLayout(mode){
+  if(mode===graphLayout)return;
+  graphLayout=mode;
+  document.querySelectorAll(".layout-switch button").forEach(b=>b.classList.toggle("on",b.dataset.layout===mode));
+  document.getElementById("graphInner").classList.toggle("circular",mode==="circular");
+  const pos={};
+  NODES.forEach(n=>{
+    pos[n.id]=nodePos(n,mode);
+    const el=document.getElementById("n_"+n.id);
+    el.style.left=pos[n.id].x+"px";
+    el.style.top=pos[n.id].y+"px";                   /* 节点 CSS transition: .3s 自动补间 */
+  });
+  const svg=document.getElementById("edges");
+  svg.style.opacity=".12";                           /* 连边淡出 → 换 d → 淡入 */
+  setTimeout(()=>{
+    document.querySelectorAll("#edges path").forEach(p=>{
+      p.setAttribute("d",edgePath(pos[p.dataset.a],pos[p.dataset.b],mode));
+      p.style.setProperty("--ec",CAT_COL[NODES.find(n=>n.id===p.dataset.a).c]);
+    });
+    svg.style.opacity="1";
+    if(graphSel)selectNode(graphSel);                /* 布局切换后保持当前血缘选中态 */
+    else document.querySelectorAll("#edges path").forEach(p=>p.classList.remove("hl","dim"));
+  },270);
+  fitGraph&&fitGraph();                              /* 重新贴合视口 */
+}
+document.querySelectorAll(".layout-switch button").forEach(b=>{
+  b.onclick=e=>{e.stopPropagation();setGraphLayout(b.dataset.layout);};
+});
+window.setGraphLayout=setGraphLayout;
+
+function hoverNode(id,on){
+  document.querySelectorAll("#edges path").forEach(p=>{
+    const rel=p.dataset.a===id||p.dataset.b===id;
+    if(on)p.classList.toggle("hl",rel);else if(!p.classList.contains("hl"))p.classList.remove("hl");
+    p.classList.toggle("dim",on&&!rel);
+  });
+}
+function ancestors(id){ // 全部上游
+  const set=new Set(),q=[id];
+  while(q.length){const cur=q.pop();EDGES.forEach(([a,b])=>{if(b===cur&&!set.has(a)){set.add(a);q.push(a);}});}
+  return set;
+}
+function descendants(id){const set=new Set(),q=[id];while(q.length){const cur=q.pop();EDGES.forEach(([a,b])=>{if(a===cur&&!set.has(b)){set.add(b);q.push(b);}});}return set;}
+function selectNode(id){
+  graphSel=id;
+  document.querySelectorAll(".gnode").forEach(e=>e.classList.remove("sel","on-path","dim"));
+  const path=[...ancestors(id),id,...descendants(id)];
+  document.querySelectorAll(".gnode").forEach(e=>{
+    const nid=e.id.slice(2);
+    if(path.includes(nid))e.classList.add("on-path");else e.classList.add("dim");
+  });
+  document.getElementById("n_"+id).classList.add("sel");
+  document.querySelectorAll("#edges path").forEach(p=>{
+    const rel=path.includes(p.dataset.a)&&path.includes(p.dataset.b);
+    p.classList.toggle("hl",rel);p.classList.toggle("dim",!rel);
+  });
+  const d=DETAIL[id];
+  const up=[...ancestors(id)].map(x=>x).reverse();
+  document.getElementById("detail").innerHTML=`
+    <div class="d-type">${d.type}</div><h3>${d.d}</h3>
+    ${d.items.map(([k,v])=>`<div class="d-item"><span>${k}</span><p${/[=←÷×]/.test(v)?" class='mono'":""}>${v}</p></div>`).join("")}
+    <div class="d-item"><span>血缘链路</span>
+      <div class="chain">
+        ${(up.length?up:["—"]).map(x=>`<div class="step">${NODES.find(n=>n.id===x).n}</div>`).join("")}
+        <div class="step" style="color:var(--txt)"><strong>${d.d}</strong></div>
+        ${[...descendants(id)].map(x=>`<div class="step">${NODES.find(n=>n.id===x).n}</div>`).join("")}
+      </div>
+    </div>`;
+}
+function jumpMetric(id){
+  switchTab("graph");
+  setTimeout(()=>selectNode(id),260);
+}
+
+/* ================= 手势交互 ================= */
+let fitGraph=null;
+(function(){
+  const canvas=document.querySelector(".graph-canvas");
+  const inner=document.getElementById("graphInner");
+  if(!canvas||!inner)return;
+  let scale=1,ox=0,oy=0;
+  const CW=()=>canvas.clientWidth||1180, CH=()=>canvas.clientHeight||660;
+  const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+  function apply(){
+    const w=1180*scale,h=640*scale;
+    ox=w<=CW()?(CW()-w)/2:clamp(ox,w-CW(),0);
+    oy=h<=CH()?(CH()-h)/2:clamp(oy,h-CH(),0);
+    inner.style.transform=`translate(${ox}px,${oy}px) scale(${scale})`;
+  }
+  fitGraph=function(){
+    scale=Math.min(1,Math.max(.5,CW()/1180));
+    ox=(CW()-1180*scale)/2;oy=(CH()-640*scale)/2;apply();
+  };
+  function zoomAt(ns,px,py){
+    ns=clamp(ns,.5,2);
+    ox=px-(px-ox)*(ns/scale);
+    oy=py-(py-oy)*(ns/scale);
+    scale=ns;apply();
+  }
+  // 滚轮缩放
+  canvas.addEventListener("wheel",e=>{
+    e.preventDefault();
+    const r=canvas.getBoundingClientRect();
+    zoomAt(scale*Math.exp(-e.deltaY*0.0016),e.clientX-r.left,e.clientY-r.top);
+  },{passive:false});
+  // 指针拖拽平移 + 双指捏合缩放
+  const pts=new Map();
+  let base=null,pinch=null,dragged=false,sx=0,sy=0;
+  canvas.addEventListener("pointerdown",e=>{
+    try{canvas.setPointerCapture(e.pointerId);}catch(_){}
+    pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    sx=e.clientX;sy=e.clientY;dragged=false;
+    canvas.classList.add("panning");
+    if(pts.size===1){base={x:e.clientX,y:e.clientY,ox,oy};}
+    else if(pts.size===2){
+      const [a,b]=[...pts.values()];
+      const r=canvas.getBoundingClientRect();
+      const m0x=(a.x+b.x)/2-r.left,m0y=(a.y+b.y)/2-r.top;
+      pinch={d0:Math.hypot(a.x-b.x,a.y-b.y)||1,s0:scale,ax:(m0x-ox)/scale,ay:(m0y-oy)/scale};
+      base=null;dragged=true;
+    }
+  });
+  canvas.addEventListener("pointermove",e=>{
+    if(!pts.has(e.pointerId))return;
+    pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pinch&&pts.size>=2){
+      const [a,b]=[...pts.values()];
+      const r=canvas.getBoundingClientRect();
+      const mcx=(a.x+b.x)/2-r.left,mcy=(a.y+b.y)/2-r.top;
+      const ns=clamp(pinch.s0*(Math.hypot(a.x-b.x,a.y-b.y)/pinch.d0),.5,2);
+      ox=mcx-pinch.ax*ns;oy=mcy-pinch.ay*ns;scale=ns;apply();
+    }else if(base&&pts.size===1){
+      ox=base.ox+(e.clientX-base.x);
+      oy=base.oy+(e.clientY-base.y);
+      if(Math.abs(e.clientX-sx)+Math.abs(e.clientY-sy)>6)dragged=true;
+      apply();
+    }
+  });
+  function up(e){
+    pts.delete(e.pointerId);
+    try{canvas.releasePointerCapture(e.pointerId);}catch(_){}
+    if(pts.size===1){const [a]=[...pts.values()];base={x:a.x,y:a.y,ox,oy};pinch=null;}
+    if(pts.size===0){base=null;pinch=null;canvas.classList.remove("panning");}
+  }
+  canvas.addEventListener("pointerup",up);
+  canvas.addEventListener("pointercancel",up);
+  // 拖拽后抑制节点误点击
+  canvas.addEventListener("click",e=>{
+    if(dragged){e.stopPropagation();e.preventDefault();dragged=false;}
+  },true);
+  // 双击复位
+  canvas.addEventListener("dblclick",()=>fitGraph());
+  window.addEventListener("resize",()=>{if(window.__graphFitted)apply();});
+  // 页面左右滑动切换标签
+  let wx=0,wy=0,wt=0,swipe=false;
+  document.addEventListener("pointerdown",e=>{
+    swipe=!(e.target.closest&&(e.target.closest(".graph-canvas")||e.target.closest("input")||e.target.closest("button")||e.target.closest(".chip")));
+    wx=e.clientX;wy=e.clientY;wt=Date.now();
+  });
+  document.addEventListener("pointerup",e=>{
+    if(!swipe)return;swipe=false;
+    const dx=e.clientX-wx,dy=e.clientY-wy,dt=Date.now()-wt;
+    if(dt<700&&Math.abs(dx)>=90&&Math.abs(dx)>=Math.abs(dy)*1.6){
+      const order=["home","ask","board","graph"];
+      const cur=order.indexOf(document.querySelector(".tab.on").dataset.view);
+      const ni=dx<0?Math.min(cur+1,order.length-1):Math.max(cur-1,0);
+      if(ni!==cur)switchTab(order[ni]);
+    }
+  });
+  // 键盘方向键切换
+  document.addEventListener("keydown",e=>{
+    if(document.activeElement&&document.activeElement.tagName==="INPUT")return;
+    if(e.key!=="ArrowLeft"&&e.key!=="ArrowRight")return;
+    const order=["home","ask","board","graph"];
+    const cur=order.indexOf(document.querySelector(".tab.on").dataset.view);
+    const ni=e.key==="ArrowRight"?Math.min(cur+1,order.length-1):Math.max(cur-1,0);
+    if(ni!==cur)switchTab(order[ni]);
+  });
+})();
+
+/* ================= 标签与初始化 ================= */
+function switchTab(v){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.view===v));
+  document.querySelectorAll(".view").forEach(s=>s.classList.toggle("on",s.id==="view-"+v));
+  if(v==="graph"&&typeof fitGraph==="function"&&!window.__graphFitted){fitGraph();window.__graphFitted=true;}
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>switchTab(t.dataset.view));
+
+/* ================= 隔空手势（摄像头 · 悬空操控） =================
+   手部识别：MediaPipe HandLandmarker（CDN，21 点单手骨架）
+   手势：掌心移动 = 光标 ｜ 捏合(拇食指) = 点击 ｜ 左右挥手 = 翻页     */
+const airEls={
+  btn:document.getElementById("airToggle"),
+  dock:document.getElementById("airDock"),
+  video:document.getElementById("airVideo"),
+  canvas:document.getElementById("airCanvas"),
+  cursor:document.getElementById("airCursor"),
+  status:document.getElementById("airStatus"),
+  close:document.getElementById("airClose"),
+};
+let airOn=false, airLM=null, airStream=null, airRaf=0, airPrevVt=-1,
+    airLastSwipe=0, airLastClick=0, airPinchPrev=false, airPalmHist=[];
+const HAND_PAIRS=[[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[5,9],[9,10],[10,11],[11,12],
+                  [9,13],[13,14],[14,15],[15,16],[13,17],[17,18],[18,19],[19,20],[0,17]];
+function airSet(t,cls){
+  const s=airEls.status;
+  if(s&&s.textContent!==t){s.textContent=t;s.className="ad-status"+(cls?" "+cls:"");}
+}
+function airShow(on){airEls.dock.hidden=!on;airEls.cursor.hidden=!on}
+let airStarting=false;
+async function toggleAir(){
+  if(airOn){stopAir();return;}
+  if(airStarting)return;                 /* 启动中忽略重复点击 */
+  if(!airEls.dock.hidden){stopAir();return;}  /* 浮窗已开（如启动失败）→ 再点即关闭 */
+  airStarting=true;
+  airShow(true);airSet("正在启动摄像头与手势模型…");
+  try{
+    if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia))throw new Error("nocam");
+    if(!airLM){
+      /* 优先加载本地自托管资源（部署目录 assets/mp/），彻底不依赖被墙的 CDN；
+         本地缺失（如 file:// 双击打开）时回退到 CDN。GPU 不可用时自动降级 CPU。 */
+      const load=async(base)=>({
+        V:await import(base+"vision_bundle.mjs"),
+        fr:await (await import(base+"vision_bundle.mjs")).FilesetResolver.forVisionTasks(base+"wasm"),
+      });
+      let V=null,fr=null,mpBase="./assets/mp/";
+      try{
+        const local=await load("./assets/mp/");
+        V=local.V;fr=local.fr;
+      }catch(_){
+        const cdn=await load("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/");
+        V=cdn.V;fr=cdn.fr;mpBase="https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/";
+      }
+      const mk=async(delegate)=>V.HandLandmarker.createFromOptions(fr,{
+        baseOptions:{modelAssetPath:mpBase+"hand_landmarker.task",delegate:delegate},
+        runningMode:"VIDEO",numHands:1
+      });
+      try{airLM=await mk("GPU");}
+      catch(_){airLM=await mk("CPU");}
+    }
+    airStream=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480,facingMode:"user"}});
+    airEls.video.srcObject=airStream;
+    await airEls.video.play();
+    airOn=true;airEls.btn.classList.add("on");airEls.btn.setAttribute("aria-pressed","true");
+    airEls.cursor.style.opacity="1";
+    airSet("正在搜索手掌… 请将手置于镜头前");
+    airLoop();
+  }catch(e){
+    const m=String((e&&e.message)||e);
+    airSet(
+      m==="nocam"?"未检测到摄像头（请使用 HTTPS / localhost 并授权摄像头）":
+      (e&&e.name==="NotAllowedError")?"摄像头权限被拒绝，请在浏览器地址栏允许访问":
+      "启动失败："+m,"err");
+  }finally{
+    airStarting=false;
+  }
+}
+window.toggleAir=toggleAir;
+function stopAir(){
+  airOn=false;
+  if(typeof cancelAnimationFrame==="function")cancelAnimationFrame(airRaf);
+  if(typeof clearTimeout==="function")clearTimeout(airRaf);
+  airRaf=0;
+  if(airStream){airStream.getTracks().forEach(t=>t.stop());airStream=null;}
+  try{airEls.video.srcObject=null;}catch(_){}
+  airEls.btn.classList.remove("on");airEls.btn.setAttribute("aria-pressed","false");
+  airEls.cursor.style.opacity="0";airPalmHist=[];
+  const ctx=airEls.canvas.getContext&&airEls.canvas.getContext("2d");
+  if(ctx)ctx.clearRect(0,0,airEls.canvas.width,airEls.canvas.height);
+  airShow(false);
+}
+function airLoop(){
+  if(!airOn)return;
+  const v=airEls.video;
+  if(v.readyState>=2&&airLM&&v.currentTime!==airPrevVt){
+    airPrevVt=v.currentTime;
+    let res=null;
+    try{res=airLM.detectForVideo(v,performance.now());}catch(_){}
+    if(res)airHandle(res);
+  }
+  airRaf=(typeof requestAnimationFrame==="function")?requestAnimationFrame(airLoop):setTimeout(airLoop,66);
+}
+function airHandle(res){
+  const lm=res.landmarks&&res.landmarks[0];
+  const cur=airEls.cursor;
+  if(!lm){cur.style.opacity="0";airSet("未检测到手 · 请将手掌对准镜头");return;}
+  cur.style.opacity="1";
+  const W=innerWidth,H=innerHeight;
+  /* 镜像映射 + 灵敏度增益（1.7×）：手在镜头小幅移动即可覆盖全屏，边缘夹紧 */
+  const gx=(1-lm[9].x)-0.5, gy=lm[9].y-0.5;
+  const sx=Math.min(W-24,Math.max(24,(0.5+gx*1.7)*W));
+  const sy=Math.min(H-24,Math.max(24,(0.5+gy*1.7)*H));
+  cur.style.transform="translate3d("+(sx-17)+"px,"+(sy-17)+"px,0)";
+  drawHands(lm);
+  /* 捏合检测：拇食指间距 / 手掌尺度，带迟滞 */
+  const d=(a,b)=>Math.hypot((a.x-b.x),((a.y-b.y)*0.8),((a.z||0)-(b.z||0)));
+  const scale=Math.max(d(lm[0],lm[9]),1e-6);
+  const ratio=d(lm[4],lm[8])/scale;
+  let pinch=ratio<0.46||(airPinchPrev&&ratio<0.64);
+  if(pinch&&!airPinchPrev)cur.classList.add("pinch");
+  if(!pinch&&airPinchPrev)cur.classList.remove("pinch");
+  airPinchPrev=pinch;
+  const now=performance.now();
+  if(pinch&&now-airLastClick>420){
+    airLastClick=now;
+    const el=document.elementFromPoint(
+      Math.min(W-2,Math.max(2,sx)),Math.min(H-2,Math.max(2,sy)));
+    if(el&&!el.closest(".air-dock")&&!el.closest(".air-toggle")){
+      el.click();
+      airSet("🤏 捏合 → 点击 "+String(el.id||el.className||el.tagName).slice(0,26),"ok");
+    }
+  }
+  /* 挥手翻页：0.72s 窗口内掌心横移超过屏宽 13%，0.8s 冷却 */
+  airPalmHist=airPalmHist.filter(p=>now-p.t<720);
+  airPalmHist.push({t:now,x:sx});
+  if(airPalmHist.length>4&&now-airLastSwipe>800){
+    const a=airPalmHist[0],b=airPalmHist[airPalmHist.length-1];
+    if(b.t-a.t>340){
+      const dx=b.x-a.x,th=W*0.13;
+      if(Math.abs(dx)>th){
+        airLastSwipe=now;airPalmHist=[];
+        const tabs=["home","ask","board","graph"];
+        const ci=tabs.indexOf(document.querySelector(".tab.on").dataset.view);
+        const ni=dx<0?Math.min(ci+1,tabs.length-1):Math.max(ci-1,0);
+        switchTab(tabs[ni]);
+        airSet((dx<0?"✋ 挥手 → 下一页：":"✋ 挥手 → 上一页：")+tabs[ni],"ok");
+        return;
+      }
+    }
+  }
+  if(!pinch&&now-airLastClick>1500&&now-airLastSwipe>1500){
+    airSet("跟踪中 · 掌心移动光标，捏合点选");
+  }
+}
+function drawHands(lm){
+  const cv=airEls.canvas;
+  if(!cv.getContext)return;
+  const ctx=cv.getContext("2d");
+  if(!ctx)return;
+  const vw=airEls.video.videoWidth||320,vh=airEls.video.videoHeight||240;
+  if(cv.width!==vw){cv.width=vw;cv.height=vh;}
+  ctx.clearRect(0,0,cv.width,cv.height);
+  ctx.lineWidth=2;ctx.strokeStyle="rgba(230,0,18,.9)";
+  ctx.beginPath();
+  for(let i=0;i<HAND_PAIRS.length;i++){
+    const p=lm[HAND_PAIRS[i][0]],q=lm[HAND_PAIRS[i][1]];
+    ctx.moveTo(p.x*cv.width,p.y*cv.height);
+    ctx.lineTo(q.x*cv.width,q.y*cv.height);
+  }
+  ctx.stroke();
+  ctx.fillStyle="#fff";
+  for(let i=0;i<lm.length;i++){
+    ctx.beginPath();ctx.arc(lm[i].x*cv.width,lm[i].y*cv.height,2.6,0,6.2832);ctx.fill();
+  }
+}
+airEls.btn.onclick=()=>toggleAir();
+airEls.close.onclick=()=>stopAir();
+window.addEventListener("beforeunload",()=>{if(airOn)stopAir();});
+/* ================= 隔空手势 END ================= */
+
+setInterval(()=>{document.getElementById("clock").textContent=new Date().toLocaleTimeString("zh-CN",{hour12:false});},1000);
+
+renderBoard();
+buildGraph();
+// 开场问数演示
+setTimeout(()=>pushMsg("ai","ChatBI",`<div class="a-title">你好，我是终端运营问数助手</div>直接用口语提问即可——例如「上周销量怎么样」「国补贡献了多少」「哪个区县转化率低」。我的每个回答都会携带 <strong>源系统 / 取数时间 / 口径版本</strong>，并可一键跳转数据图谱查看血缘。`),300);
+</script>
+</body>
+</html>
